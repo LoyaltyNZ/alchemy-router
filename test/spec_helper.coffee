@@ -33,10 +33,11 @@ global.ResourceService = alchemy.ResourceService
 
 # Local imports
 
-global.Util = require("../src/util")
-global.HTTPEndpoint = require("../src/http_endpoint")
-global.Router = require("../src/router")
-global.ServiceResolver = require '../src/service_resolver'
+alchemy_router = require '../src/alchemy_router'
+global.Util = alchemy_router.Util
+global.HTTPEndpoint = alchemy_router.HTTPEndpoint
+global.Router = alchemy_router.Router
+global.ServiceResolver = alchemy_router.ServiceResolver
 
 
 global.random_name = (prefix) ->
