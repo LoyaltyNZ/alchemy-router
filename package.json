@@ -11,7 +11,7 @@
         "name": "Graham Jenson",
         "email": "graham.jenson@loyaltynz.co.nz"
     },
-    "main": "src/alchemy.coffee",
+    "main": "src/alchemy_router.coffee",
     "engines": {
         "node": ">= 0.12.7"
     },
