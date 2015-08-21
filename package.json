@@ -1,0 +1,39 @@
+{
+    "name": "alchemy-router",
+    "description": "Router for the Alchemy Platform which takes HTTP requests and forwards them to micro-services",
+    "version": "0.0.1",
+    "homepage": "https://github.com/LoyaltyNZ/alchemy-router",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/LoyaltyNZ/alchemy-router.git"
+    },
+    "author": {
+        "name": "Graham Jenson",
+        "email": "graham.jenson@loyaltynz.co.nz"
+    },
+    "main": "src/alchemy.coffee",
+    "engines": {
+        "node": ">= 0.12.7"
+    },
+    "dependencies": {
+        "coffee-script": "1.9.3",
+        "express": "4.13.3",
+        "bluebird": "2.9.34",
+        "lodash": "3.10.1",
+        "node-uuid": "1.4.3",
+        "alchemy": "git+ssh://git@github.com/LoyaltyNZ/alchemy_js.git#feature/zero-queues",
+        "qs": "4.0.0",
+        "dotenv": "1.1.0"
+    },
+    "devDependencies": {
+        "mocha": "2.2.5",
+        "chai": "2.3.0",
+        "chai-as-promised": "5.0.0",
+        "sinon": "1.14.1",
+        "request": "2.51.0",
+        "throat": "2.0.2"
+    },
+    "scripts": {
+        "test": "mocha"
+    }
+}
