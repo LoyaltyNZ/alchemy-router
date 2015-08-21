@@ -1,5 +1,5 @@
 {
-    "name": "alchemy-router",
+    "name": "alchemy_router",
     "description": "Router for the Alchemy Platform which takes HTTP requests and forwards them to micro-services",
     "version": "0.0.1",
     "homepage": "https://github.com/LoyaltyNZ/alchemy-router",
