@@ -7,7 +7,7 @@ describe 'Router', ->
   describe '#start #stop', ->
     it 'should work', ->
       router = new Router()
-      router.run()
+      router.start()
       .finally( ->
         router.stop()
       )
@@ -15,7 +15,7 @@ describe 'Router', ->
   describe "version", ->
     it 'should return the version', ->
       router = new Router(version: "VERSION")
-      router.run()
+      router.start()
       .then( ->
         http_get("http://localhost:#{router.config.port}/version")
       )
@@ -44,7 +44,7 @@ describe 'Router', ->
         middleware: [new ServiceResolver({resource_path: service_name})]
       )
 
-      bb.all([router.run(), resource_service.start()])
+      bb.all([router.start(), resource_service.start()])
       .then( ->
         http_get("http://localhost:#{router.config.port}#{resource_path}")
       )
@@ -70,7 +70,7 @@ describe 'Router', ->
 
       router = new Router(timeout: 100)
 
-      bb.all([router.run(), resource_service.start()])
+      bb.all([router.start(), resource_service.start()])
       .then( ->
         http_get("http://localhost:#{router.config.port}#{resource_path}")
       )
@@ -105,7 +105,7 @@ describe 'Router', ->
         middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
       )
 
-      bb.all([router.run(), service.start(), resource_service.start()])
+      bb.all([router.start(), service.start(), resource_service.start()])
       .then( ->
         http_get("http://localhost:#{router.config.port}#{resource_path}")
       )
@@ -127,7 +127,7 @@ describe 'Router', ->
   describe 'routes', ->
     it 'should return 404 for unregistered service', ->
       router = new Router()
-      router.run()
+      router.start()
       .then( ->
         http_get("http://localhost:#{router.config.port}/random_url")
       )
@@ -143,7 +143,7 @@ describe 'Router', ->
         timeout: 100,
         middleware: [new ServiceResolver({"/v1/service": "service.location"})]
       )
-      router.run()
+      router.start()
       .then( ->
         http_get("http://localhost:#{router.config.port}/v1/service")
       )
@@ -162,7 +162,7 @@ describe 'Router', ->
         middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
       )
 
-      bb.all([router.run(), service.start()])
+      bb.all([router.start(), service.start()])
       .then( ->
         http_get("http://localhost:#{router.config.port}/v1/hello")
       )
@@ -215,7 +215,7 @@ describe 'Router', ->
         middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
       )
 
-      bb.all([router.run(), service.start()])
+      bb.all([router.start(), service.start()])
       .then( ->
         http_get_with_headers(
           "http://localhost:#{router.config.port}/v1/hello",

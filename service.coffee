@@ -28,7 +28,7 @@ options = {
 }
 
 router = new Router(options)
-router.run()
+router.start()
 .catch( (err) ->
   console.error  "Unexpected Error"
   console.error err

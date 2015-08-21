@@ -45,7 +45,7 @@ describe 'Router Performance', ->
       middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
     )
 
-    bb.all([router.run(), service.start(), resource_service.start()])
+    bb.all([router.start(), service.start(), resource_service.start()])
     .then( ->
       console.log "Testing Sending MEssages to Service"
       st = new Date().getTime()
