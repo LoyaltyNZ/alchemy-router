@@ -35,11 +35,12 @@ class HTTPEndpoint
     @app.disable('x-powered-by')
     @setupChunk(@app)
     @setupVersion(@app)
-    @setupErrors(@app)
+    
 
     for mw in @additional_middleware
       @app.use(mw)
 
+    @setupErrors(@app)
     @app.route("*").all @httpHandler
 
   run:  ->
