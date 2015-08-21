@@ -28,8 +28,6 @@ class Router
     #}
 
   start: ->
-    @config.logger("Starting Alchemy Router v#{@config.version} with #{JSON.stringify(@config,null,2)}")
-
     @router_service = new Service('alchemy_router', {
       service_queue: false
       amqp_uri: @config.amqp_uri
