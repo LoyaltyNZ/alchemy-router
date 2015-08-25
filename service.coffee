@@ -1,7 +1,7 @@
 # Imports
 _ = require("lodash")
 Router = require("./src/router")
-package = require('./package.json')
+npm_package = require('./package.json')
 ServiceResolver = require './src/service_resolver'
 env = _.defaults(
   process.env,
@@ -9,18 +9,19 @@ env = _.defaults(
     AMQ_URI: 'amqp://localhost'
     PORT: 8080
     TIMEOUT: 5000
-    routes_file: null
+    ROUTESFILE: null
   }
 )
 
 if env
-  routes = require(routes_file)
+  routes = require(env.ROUTESFILE)
 else
   routes = {}
 
+console.log routes
 options = {
   logger: console.log
-  version: package.version
+  version: npm_package.version
   amqp_uri: env.AMQ_URI
   port: env.PORT
   timeout: env.TIMEOUT

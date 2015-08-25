@@ -70,6 +70,9 @@ class Router
     # we post the service onto the
     httpRequest =
       session_id: req.get 'X-Session-ID'
+      scheme: req.protocol
+      host: req.hostname
+      port: req.port || 80
       path: req.path
       query: req.query
       verb: req.method
