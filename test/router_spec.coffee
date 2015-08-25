@@ -143,7 +143,11 @@ describe 'Router', ->
         timeout: 100,
         middleware: [new ServiceResolver({"/v1/service": "service.location"})]
       )
-      router.start()
+      service = new Service("service.location")
+      service.start().then( -> service.stop())
+      .then( ->
+        router.start()
+      )
       .then( ->
         http_get("http://localhost:#{router.config.port}/v1/service")
       )
