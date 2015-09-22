@@ -9,14 +9,12 @@ env = _.defaults(
     AMQ_URI: 'amqp://localhost'
     PORT: 8080
     TIMEOUT: 5000
-    ROUTESFILE: null
+    ROUTES: '{}'
   }
 )
 
-if env
-  routes = require(env.ROUTESFILE)
-else
-  routes = {}
+
+routes = JSON.parse(env.ROUTES)
 
 console.log routes
 options = {
