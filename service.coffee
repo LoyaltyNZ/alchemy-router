@@ -13,7 +13,7 @@ env = _.defaults(
   }
 )
 
-
+env.ROUTES = env.ROUTES.replace(/\\/g, '') #remove escapes if any
 routes = JSON.parse(env.ROUTES)
 
 console.log routes
