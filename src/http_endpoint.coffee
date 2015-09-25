@@ -8,6 +8,7 @@ defaultHandler = (req, res) ->
   res.end()
 
 sendHTTPResponse = (response, req, res) ->
+  res.body = response.body
   res.status response.status_code
   res.header header, value for header, value of response.headers
   res.send response.body
