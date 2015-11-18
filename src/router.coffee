@@ -14,11 +14,11 @@ class Router
       options,
       {
         logger: console.log
-        version: "0.0.0"
         amqp_uri: 'amqp://localhost'
         port: 8080
         timeout: 5000
         middleware: []
+        additional_routes: []
       }
     )
 
@@ -34,15 +34,15 @@ class Router
       timeout: @config.timeout
     })
 
-    callbacks = @config.middleware.map( (mw) -> mw.callback)
-    @http = new HTTPEndpoint(@config.port, @config.version, @onHTTPRequest, callbacks)
+    middleware_callbacks = @config.middleware.map( (mw) -> mw.callback)
+    @http = new HTTPEndpoint(@config.port, @onHTTPRequest, middleware_callbacks, @config.additional_routes)
 
     promises = @config.middleware.map( (mw) -> mw.start())
     bb.all(promises)
     .then( =>
       @router_service.start()
     )
-    .then( =>  
+    .then( =>
       @http.run()
     )
 
@@ -98,7 +98,7 @@ class Router
         headers: content.headers
         body: content.body
         duration: Date.now() - transaction.createdOn
-      
+
       @config.logger Util.getHTTPLogLine(transaction.req, transaction.response.status_code, transaction.response.duration)
       HTTPEndpoint.sendHTTPResponse(transaction.response, transaction.req, transaction.res)
       true

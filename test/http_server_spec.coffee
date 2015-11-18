@@ -29,7 +29,7 @@ describe 'HTTPEndpoint', ->
         res.send {hello: "world"}
         res.end()
 
-      http_endpoint = new HTTPEndpoint(8080, '0.0.0', httpHandler)
+      http_endpoint = new HTTPEndpoint(8080, httpHandler)
       http_endpoint.run()
       .then( ->
         http_get("http://localhost:#{http_endpoint.port}/random_url")
@@ -47,14 +47,14 @@ describe 'HTTPEndpoint', ->
         res.status 200
         res.send {hello: "world"}
         res.end()
-      
+
       toggle = false
 
       middleware = (req,res,next) ->
         toggle = true
         next()
 
-      http_server = new HTTPEndpoint(8080, '0.0.0', httpHandler, [middleware])
+      http_server = new HTTPEndpoint(8080, httpHandler, [middleware])
       http_server.run()
       .then( ->
         http_get("http://localhost:#{http_server.port}/random_url")
@@ -65,7 +65,7 @@ describe 'HTTPEndpoint', ->
       )
       .finally( ->
         http_server.stop()
-      )     
+      )
 
     it 'should 500 on middleware errors', ->
       httpHandler = (req, res) ->
@@ -78,7 +78,7 @@ describe 'HTTPEndpoint', ->
         e.name = "MiddlewareError"
         next(e)
 
-      http_server = new HTTPEndpoint(8080, '0.0.0', httpHandler, [middleware])
+      http_server = new HTTPEndpoint(8080, httpHandler, [middleware])
       http_server.run()
       .then( ->
         http_get("http://localhost:#{http_server.port}/random_url")
@@ -89,22 +89,7 @@ describe 'HTTPEndpoint', ->
       )
       .finally( ->
         http_server.stop()
-      ) 
-
-  describe 'GET version', ->
-    it 'should be handled with the given callback', ->
-      http_endpoint = new HTTPEndpoint(8080, 'VERSION')
-      http_endpoint.run()
-      .then( ->
-        http_get("http://localhost:#{http_endpoint.port}/version")
       )
-      .spread( (body, status) ->
-        expect(body).to.deep.equal({version: "VERSION"})
-      )
-      .finally( ->
-        http_endpoint.stop()
-      )
-
 
   describe '#setupChunk', ->
     it 'should call use on app', ->
