@@ -30,13 +30,14 @@ sendNotFound =  (req,res) ->
 
 class HTTPEndpoint
 
-  constructor: (@port = 8080, @version = '0.0.0',  @httpHandler = defaultHandler, @additional_middleware = []) ->
+  constructor: (@port = 8080, @httpHandler = defaultHandler, @additional_middleware = [], @additional_routes = []) ->
     @app = express()
     @app.disable('etag')
     @app.disable('x-powered-by')
     @setupChunk(@app)
-    @setupVersion(@app)
-    
+
+    for ar in @additional_routes
+      ar(@app)
 
     for mw in @additional_middleware
       @app.use(mw)
@@ -46,7 +47,7 @@ class HTTPEndpoint
 
   run:  ->
     deferred = bb.defer()
-    
+
     @httpServer = @app.listen(@port, (err) ->
       return deferred.reject(err) if err
       deferred.resolve()
@@ -94,16 +95,6 @@ class HTTPEndpoint
             "interaction_id": res.get('x-interaction-id') || Util.generateUUID()
           }
         sendHTTPResponse(err, req, res)
-
-  setupVersion: (app) ->
-    app.get '/version', (req,res) =>
-      sendHTTPResponse({
-        status_code: 200
-        headers:
-          'Content-Type': 'application/json; charset=utf-8'
-        body: '{"version":"' + @version + '"}'
-      }, req, res)
-
 
 
 HTTPEndpoint.sendHTTPResponse = sendHTTPResponse

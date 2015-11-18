@@ -12,9 +12,15 @@ describe 'Router', ->
         router.stop()
       )
 
-  describe "version", ->
-    it 'should return the version', ->
-      router = new Router(version: "VERSION")
+  describe "additional routes", ->
+    it 'adding an additional route should work', ->
+
+      version_endpoint = (app) ->
+        app.get '/version', (req,res) =>
+          res.send version: "VERSION"
+          res.end()
+
+      router = new Router(additional_routes: [version_endpoint])
       router.start()
       .then( ->
         http_get("http://localhost:#{router.config.port}/version")
@@ -40,7 +46,7 @@ describe 'Router', ->
       resource_service = new ResourceService(service_name, [resource])
 
       router = new Router(
-        timeout: 100, 
+        timeout: 100,
         middleware: [new ServiceResolver({resource_path: service_name})]
       )
 
@@ -84,10 +90,10 @@ describe 'Router', ->
     it 'should send to the right place', ->
 
       ## DIRECT TO SERVICE
-      service = new Service("hello.service", 
+      service = new Service("hello.service",
         service_fn: (payload) -> bb.delay(1).then(-> {body: {hello: "service"}}),
       )
-      
+
       ## THROUGH RESOURCE TOPIC EXCHANGE
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
@@ -160,7 +166,7 @@ describe 'Router', ->
 
     it 'should return a response from a service (including with identifier)', ->
       service = new Service("hello.service", service_fn: (payload) -> {body: {hello: "world"}})
-      
+
       router = new Router(
         timeout: 100,
         middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
@@ -215,7 +221,7 @@ describe 'Router', ->
       )
 
       router = new Router(
-        timeout: 500, 
+        timeout: 500,
         middleware: [new ServiceResolver({"/v1/hello": "hello.service"})]
       )
 
