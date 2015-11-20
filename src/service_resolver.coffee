@@ -17,6 +17,6 @@ class ServiceResolver
 
   stop: ->
     true
-    
+
 
 module.exports = ServiceResolver

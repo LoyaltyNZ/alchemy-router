@@ -21,7 +21,7 @@
         "bluebird": "2.9.34",
         "lodash": "3.10.1",
         "node-uuid": "1.4.3",
-        "alchemy": "git+ssh://git@github.com/LoyaltyNZ/alchemy_js.git#master",
+        "alchemy-resource": "git+ssh://git@github.com/LoyaltyNZ/alchemy-resource.git#master",
         "qs": "4.0.0",
         "dotenv": "1.1.0"
     },

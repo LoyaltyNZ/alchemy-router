@@ -4,8 +4,8 @@ Util = require("./util")
 bb =   require 'bluebird'
 _ =    require("lodash")
 
-alchemy = require("alchemy")
-Service = alchemy.Service
+AlchemyResource = require("alchemy-resource")
+Service = AlchemyResource.Service
 
 class Router
 
@@ -86,8 +86,12 @@ class Router
       createdOn: Date.now()
       ip_address: req.get('x-forwarded-for') || req.connection.remoteAddress
 
+    if req.service
+      transaction_promise = @router_service.sendMessageToService( req.service, httpRequest)
+    else
+      transaction_promise = @router_service.sendMessageToResource(httpRequest)
 
-    transaction_promise = @router_service.sendMessageToServiceOrResource(req.service, httpRequest)
+
     transaction.messageId = transaction_promise.messageId
     transaction.interactionId = transaction_promise.transactionId
 

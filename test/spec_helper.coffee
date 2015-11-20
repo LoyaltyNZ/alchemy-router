@@ -25,11 +25,11 @@ global.assert = chai.assert;
 
 #Alchemy Imports
 
-alchemy = require("alchemy")
-global.Service = alchemy.Service
-global.SessionClient = alchemy.SessionClient
-global.Resource = alchemy.Resource
-global.ResourceService = alchemy.ResourceService
+AlchemyResource = require("alchemy-resource")
+global.Service = AlchemyResource.Service
+global.SessionClient = AlchemyResource.SessionClient
+global.Resource = AlchemyResource.Resource
+global.ResourceService = AlchemyResource.ResourceService
 
 # Local imports
 
@@ -72,7 +72,7 @@ global.http_get = (url) ->
   .then(parse_response_into_json_status)
 
 global.http_post = (url, body) ->
-  req = 
+  req =
     url: url
     method: "POST"
     agent: false
