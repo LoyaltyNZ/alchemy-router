@@ -23,11 +23,12 @@
     "express": "4.13.3",
     "bluebird": "2.9.34",
     "lodash": "3.10.1",
-    "alchemy-resource": "0.0.3",
+    "alchemy-resource": "0.0.4",
     "qs": "4.0.0",
     "dotenv": "1.1.0"
   },
   "devDependencies": {
+    "alchemy-ether": "0.0.2",
     "mocha": "2.2.5",
     "chai": "2.3.0",
     "sinon": "1.14.1",
