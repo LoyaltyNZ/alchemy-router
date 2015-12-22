@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Alchemy Router</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="page">
+
+      <div class="header">
+        
+          
+          <h1 id="alchemy-router">Alchemy Router</h1>
+<p>Alchemy Router is the gateway from HTTP to Alchemy Resources for the Alchemy Micro-services Framework. It can be used directly as an application or as a library to build and customise using <a href="http://expressjs.com/en/guide/using-middleware.html">express</a> middleware and routes.</p>
+<h2 id="router-application">Router Application</h2>
+<p>To install the alchemy router run:</p>
+<pre><code><span class="hljs-built_in">npm</span> install -g alchemy-router
+</code></pre><p>Then execute:</p>
+<pre><code>alchemy-router
+</code></pre><p>You can configure the router with the environment variables:</p>
+<ol>
+<li><code>AMQP_URI</code>  <em>default <code>&#39;amqp://localhost&#39;</code></em>: the location of the (RabbitMQ) AMQP server</li>
+<li><code>PORT</code> <em>default <code>8080</code></em>: the port to open the HTTP server on</li>
+<li><code>TIMEOUT</code> <em>default <code>5000</code></em>: the router will return a <code>408</code> timeout response after waiting for the service.</li>
+<li><code>PATHS</code> <em>default <code>&#39;{}&#39;</code></em>: the JSON string that matches service queues directly with paths, e.g. <code>PATHS=&#39;{&quot;/hello&quot; : &#39;service.hello&#39;}&#39;</code> will direct all calls that start with path <code>/hello</code> to the queue <code>service.hello</code>.</li>
+</ol>
+<h3 id="docker">Docker</h3>
+<p>This repository also comes with an example Docker container, which is published to the docker hub.</p>
+<p>Build the Docker container with:</p>
+<pre><code>docker build -t alchemy-router:$VERSION .
+</code></pre><p>Push the docker container with:</p>
+<pre><code>docker push alchemy-router:$VERSION
+</code></pre><h2 id="router-library">Router Library</h2>
+<p>To install the router as a library:</p>
+<pre><code><span class="hljs-built_in">npm</span> install alchemy-router
+</code></pre><p>To start a router:</p>
+<pre><code>AlchemyRouter = <span class="hljs-built_in">require</span> <span class="hljs-string">'alchemy-router'</span>
+router = <span class="hljs-keyword">new</span> AlchemyRouter()
+router.start()
+</code></pre><h3 id="middleware">Middleware</h3>
+<p>Middleware can be used to extend the routers with custom functionality. Middleware are objects with a <code>callback</code> that is an <a href="http://expressjs.com/en/guide/using-middleware.html">express middleware</a> callback function, an optional <code>start</code> and <code>stop</code> functions that can control the life cycle of the middleware.</p>
+<pre><code>logging_middleware = {
+  callback: <span class="hljs-function"><span class="hljs-params">(req, res, next)</span> -&gt;</span>
+    <span class="hljs-built_in">console</span>.log req.path
+    next()
+
+  <span class="hljs-comment"># promise to start middleware</span>
+  start: <span class="hljs-function">-&gt;</span> <span class="hljs-literal">true</span>
+
+  <span class="hljs-comment"># promise to stop middleware</span>
+  stop: <span class="hljs-function">-&gt;</span> <span class="hljs-literal">true</span>
+}
+
+AlchemyRouter = <span class="hljs-built_in">require</span> <span class="hljs-string">'alchemy-router'</span>
+router = <span class="hljs-keyword">new</span> AlchemyRouter()
+router.start({
+  middleware: [logging_middleware]
+})
+</code></pre><h3 id="additional-routes">Additional Routes</h3>
+<p>Additional hard-coded routes can be added to the router, these can be useful for health-checks, logging, versioning … <em>Note: these routes will override any service routes.</em></p>
+<pre><code><span class="hljs-function"><span class="hljs-title">hello_route</span> = <span class="hljs-params">(app)</span> -&gt;</span>
+  app.get <span class="hljs-string">'/hello'</span>, <span class="hljs-function"><span class="hljs-params">(req, res)</span> =&gt;</span>
+    res.send {say: <span class="hljs-string">"hello"</span>}
+    res.end()
+
+AlchemyRouter = <span class="hljs-built_in">require</span> <span class="hljs-string">'alchemy-router'</span>
+router = <span class="hljs-keyword">new</span> AlchemyRouter()
+router.start({
+  additional_routes: [hello_route]
+})
+</code></pre><h2 id="documentation">Documentation</h2>
+<p><em>This Alchemy-Router documentation is generated with <a href="https://jashkenas.github.io/docco/">docco</a> from its annotated source code.</em></p>
+<p>The Alchemy-Router package exports <a href="./src/router.html">Service</a>:</p>
+
+          
+            <div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./router"</span>)</pre></div>
+          
+        
+
+        
+      </div>
+
+      
+        
+        <h2 id="examples">Examples</h2>
+<ul>
+<li><a href="./examples/example_1_send_message.html">Sending a message to a Resource</a></li>
+</ul>
+
+        
+      
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>
