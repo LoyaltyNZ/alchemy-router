@@ -38,12 +38,13 @@
 <p>To install the router as a library:</p>
 <pre><code><span class="hljs-built_in">npm</span> install alchemy-router
 </code></pre><p>To start a router:</p>
-<pre><code>AlchemyRouter = <span class="hljs-built_in">require</span> <span class="hljs-string">'alchemy-router'</span>
+<pre><code class="lang-coffeescript">AlchemyRouter = <span class="hljs-built_in">require</span> <span class="hljs-string">'alchemy-router'</span>
 router = <span class="hljs-keyword">new</span> AlchemyRouter()
 router.start()
-</code></pre><h3 id="middleware">Middleware</h3>
+</code></pre>
+<h3 id="middleware">Middleware</h3>
 <p>Middleware can be used to extend the routers with custom functionality. Middleware are objects with a <code>callback</code> that is an <a href="http://expressjs.com/en/guide/using-middleware.html">express middleware</a> callback function, an optional <code>start</code> and <code>stop</code> functions that can control the life cycle of the middleware.</p>
-<pre><code>logging_middleware = {
+<pre><code class="lang-coffeescript">logging_middleware = {
   callback: <span class="hljs-function"><span class="hljs-params">(req, res, next)</span> -&gt;</span>
     <span class="hljs-built_in">console</span>.log req.path
     next()
@@ -60,9 +61,10 @@ router = <span class="hljs-keyword">new</span> AlchemyRouter()
 router.start({
   middleware: [logging_middleware]
 })
-</code></pre><h3 id="additional-routes">Additional Routes</h3>
+</code></pre>
+<h3 id="additional-routes">Additional Routes</h3>
 <p>Additional hard-coded routes can be added to the router, these can be useful for health-checks, logging, versioning … <em>Note: these routes will override any service routes.</em></p>
-<pre><code><span class="hljs-function"><span class="hljs-title">hello_route</span> = <span class="hljs-params">(app)</span> -&gt;</span>
+<pre><code class="lang-coffeescript"><span class="hljs-function"><span class="hljs-title">hello_route</span> = <span class="hljs-params">(app)</span> -&gt;</span>
   app.get <span class="hljs-string">'/hello'</span>, <span class="hljs-function"><span class="hljs-params">(req, res)</span> =&gt;</span>
     res.send {say: <span class="hljs-string">"hello"</span>}
     res.end()
@@ -72,9 +74,10 @@ router = <span class="hljs-keyword">new</span> AlchemyRouter()
 router.start({
   additional_routes: [hello_route]
 })
-</code></pre><h2 id="documentation">Documentation</h2>
+</code></pre>
+<h2 id="documentation">Documentation</h2>
 <p><em>This Alchemy-Router documentation is generated with <a href="https://jashkenas.github.io/docco/">docco</a> from its annotated source code.</em></p>
-<p>The Alchemy-Router package exports <a href="./src/router.html">Service</a>:</p>
+<p>The Alchemy-Router package exports <a href="./src/router.html">Router</a>:</p>
 
           
             <div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./router"</span>)</pre></div>

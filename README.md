@@ -49,7 +49,7 @@ npm install alchemy-router
 
 To start a router:
 
-```
+```coffeescript
 AlchemyRouter = require 'alchemy-router'
 router = new AlchemyRouter()
 router.start()
@@ -59,7 +59,7 @@ router.start()
 
 Middleware can be used to extend the routers with custom functionality. Middleware are objects with a `callback` that is an [express middleware](http://expressjs.com/en/guide/using-middleware.html) callback function, an optional `start` and `stop` functions that can control the life cycle of the middleware.
 
-```
+```coffeescript
 logging_middleware = {
   callback: (req, res, next) ->
     console.log req.path
@@ -83,7 +83,7 @@ router.start({
 
 Additional hard-coded routes can be added to the router, these can be useful for health-checks, logging, versioning ... *Note: these routes will override any service routes.*
 
-```
+```coffeescript
 hello_route = (app) ->
   app.get '/hello', (req, res) =>
     res.send {say: "hello"}
@@ -100,7 +100,7 @@ router.start({
 
 *This Alchemy-Router documentation is generated with [docco](https://jashkenas.github.io/docco/) from its annotated source code.*
 
-The Alchemy-Router package exports [Service](./src/router.html):
+The Alchemy-Router package exports [Router](./src/router.html):
 
     module.exports = require("./router")
 

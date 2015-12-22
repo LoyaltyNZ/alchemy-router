@@ -16,9 +16,8 @@ express                  = require("express")
 AlchemyResource          = require("alchemy-resource")
 ResourceService          = AlchemyResource.ResourceService
 Bam                      = AlchemyResource.Bam
-Service                  = require("alchemy-ether")
-MessageNotDeliveredError = Service.MessageNotDeliveredError
-TimeoutError             = Service.TimeoutError
+MessageNotDeliveredError = ResourceService.MessageNotDeliveredError
+TimeoutError             = ResourceService.TimeoutError
 
 # ## Router
 class Router

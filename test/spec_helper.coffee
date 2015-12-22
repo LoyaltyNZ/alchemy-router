@@ -21,7 +21,7 @@ global.expect = chai.expect;
 global.assert = chai.assert;
 
 #Alchemy Imports
-global.Service = require ("alchemy-ether")
+global.Service = require("alchemy-ether")
 
 AlchemyResource = require("alchemy-resource")
 global.SessionClient = AlchemyResource.SessionClient

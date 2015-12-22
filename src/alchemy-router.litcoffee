@@ -100,7 +100,7 @@ router.start({
 
 *This Alchemy-Router documentation is generated with [docco](https://jashkenas.github.io/docco/) from its annotated source code.*
 
-The Alchemy-Router package exports [Service](./src/router.html):
+The Alchemy-Router package exports [Router](./src/router.html):
 
     module.exports = require("./router")
 

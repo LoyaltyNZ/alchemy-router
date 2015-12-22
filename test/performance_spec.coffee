@@ -1,4 +1,4 @@
-number_of_messages = 500
+number_of_messages = 250
 concurrency = 5
 timeout = 5000
 
@@ -8,7 +8,7 @@ throat = require('throat')
 
 describe 'Router Performance', ->
   it 'should be fast', ->
-    @timeout 10000
+    @timeout 30000
     console.log ""
     console.log ""
     console.log "####################################################"
