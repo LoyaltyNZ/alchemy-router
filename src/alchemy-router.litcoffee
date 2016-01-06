@@ -39,6 +39,12 @@ Push the docker container with:
 docker push alchemy-router:$VERSION
 ```
 
+Run the docker container:
+
+```
+docker run -it -p 8080:8080 alchemy-router:$VERSION
+```
+
 ## Router Library
 
 To install the router as a library:
