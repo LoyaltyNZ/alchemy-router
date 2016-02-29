@@ -1,7 +1,7 @@
 {
   "name": "alchemy-router",
   "description": "alchemy-router is the gateway from HTTP to Alchemy Resources for the Alchemy Micro-services Framework",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "homepage": "https://github.com/LoyaltyNZ/alchemy-router",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
     "express": "4.13.3",
     "bluebird": "2.9.34",
     "lodash": "3.10.1",
-    "alchemy-ether": "git@github.com:LoyaltyNZ/alchemy-ether.git#feature/v1.0",
+    "alchemy-ether": "1.0.0",
     "qs": "4.0.0",
     "dotenv": "1.1.0"
   },

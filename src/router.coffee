@@ -138,7 +138,6 @@ class Router
   # * if a `TimeoutError` is caught then the response to the caller is 408 `Bam.timeout_error`
   on_HTTP_request: (req, res) =>
     http_request = {
-      session_id: req.get 'X-Session-ID'
       scheme: req.protocol
       host: req.hostname
       port: req.port || 80
