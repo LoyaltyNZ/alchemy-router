@@ -34,3 +34,8 @@ router.start()
   console.error err
   process.exit(1)
 )
+
+process.on('SIGTERM', ->
+  console.log "SIGTERM: Stopping Router"
+  router.stop().then( -> process.exit(0) )
+)
