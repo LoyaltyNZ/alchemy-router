@@ -15,14 +15,11 @@ describe 'Router', ->
     it 'should still process waiting messages after stopping', ->
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
-      resource = new Resource(resource_name, resource_path)
-
-      resource.show = (payload) ->
-        return bb.delay(500).then( -> { body: {"hello": "stop"} })
-      resource.show.public = true
 
       service_name = random_service()
-      resource_service = new ResourceService(service_name, [resource])
+      resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+        return bb.delay(500).then( -> { body: {"hello": "stop"} })
+      )
 
       router = new Router(
         timeout: 1000,
@@ -109,14 +106,11 @@ describe 'Router', ->
     it 'should route to resources explicitly set', ->
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
-      resource = new Resource(resource_name, resource_path)
-
-      resource.show = (payload) ->
-        return { body: {"hello": "world1"} }
-      resource.show.public = true
 
       service_name = random_service()
-      resource_service = new ResourceService(service_name, [resource])
+      resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+        return { body: {"hello": "world1"} }
+      )
 
       router = new Router(
         timeout: 100,
@@ -138,14 +132,11 @@ describe 'Router', ->
     it 'should route to resources via exchange', ->
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
-      resource = new Resource(resource_name, resource_path)
-
-      resource.show = (payload) ->
-        return { body: {"hello": "world2"} }
-      resource.show.public = true
 
       service_name = random_service()
-      resource_service = new ResourceService(service_name, [resource])
+      resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+        return { body: {"hello": "world2"} }
+      )
 
       router = new Router(timeout: 100)
 
@@ -164,21 +155,18 @@ describe 'Router', ->
     it 'should send to the right place', ->
 
       ## DIRECT TO SERVICE
-      service = new Service("hello.service",
-        service_fn: (payload) -> bb.delay(1).then(-> {body: {hello: "service"}}),
+      service = new Service("hello.service",{}, (payload) ->
+        bb.delay(1).then(-> {body: {hello: "service"}})
       )
 
       ## THROUGH RESOURCE TOPIC EXCHANGE
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
-      resource = new Resource(resource_name, resource_path)
-
-      resource.show = (payload) ->
-        return bb.delay(1).then(-> {body: {hello: "resource"}})
-      resource.show.public = true
 
       service_name = random_service()
-      resource_service = new ResourceService(service_name, [resource])
+      resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+        return bb.delay(1).then(-> {body: {hello: "resource"}})
+      )
 
       # SETUP ROUTER
       router = new Router(
@@ -239,7 +227,7 @@ describe 'Router', ->
       )
 
     it 'should return a response from a service (including with identifier)', ->
-      service = new Service("hello.service", service_fn: (payload) -> {body: {hello: "world"}})
+      service = new Service("hello.service", {}, (payload) -> {body: {hello: "world"}})
 
       router = new Router(
         timeout: 100,
@@ -256,54 +244,6 @@ describe 'Router', ->
       )
       .then( ->
         http_get("http://localhost:8080/v1/hello/identifier")
-      )
-      .spread( (body,status) ->
-        expect(status).to.equal(200)
-        expect(body.hello).to.equal("world")
-      )
-      .finally( ->
-        bb.all([service.stop(), router.stop()])
-      )
-
-
-    # x-interaction-id is a header used to follow the path of a single call so is
-    # used internally to track service calls, and externally for a clients logging of a single call
-    # Allowing a client to pass in a interaction ID may violate "1 call, 1 interaction id" rule
-    it 'should filter out headers equivalent to x-interaction-id, set new interaction id', ->
-      interaction_headers = {
-        'X-Interaction-Id': 'bla',
-        'x-interaction-id': 'bla',
-        'X-INTERACTION-ID': 'bla',
-        'X_Interaction_Id': 'bla',
-        'x_interaction_id': 'bla',
-        'X_INTERACTION_ID': 'bla',
-        'x-interaction_id': 'bla',
-        'x_interaction-id': 'bla',
-        'X_interaction_Id': 'bla'
-      }
-
-      service = new Service("hello.service", service_fn: (payload)->
-        # No extra headers are going through which might think are
-        # x-interaction-id
-        expect(['x-interaction-id', 'host', 'connection']).to.have.members(Object.keys(payload.headers))
-        expect(Object.keys(payload.headers).length).to.equal(3)
-
-        # None of the passed interaction id's managed to sneak through
-        expect(payload.headers['x-interaction-id']).to.not.equal('bla')
-        {body: {hello: "world"}}
-      )
-
-      router = new Router(
-        timeout: 500,
-        resource_paths: {"/v1/hello": "hello.service"}
-      )
-
-      bb.all([router.start(), service.start()])
-      .then( ->
-        http_get_with_headers(
-          "http://localhost:8080/v1/hello",
-          interaction_headers
-        )
       )
       .spread( (body,status) ->
         expect(status).to.equal(200)

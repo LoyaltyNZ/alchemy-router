@@ -22,26 +22,19 @@ describe 'Router Performance', ->
     console.log ""
 
       ## DIRECT TO SERVICE
-    service = new Service("hello.service",
-      service_fn: (context) -> bb.delay(5).then(-> {body: {hello: "service"}}),
+    service = new Service("hello.service", {}, (context) ->
+      bb.delay(5).then(-> {body: {hello: "service"}})
     )
 
 
     ## THROUGH RESOURCE TOPIC EXCHANGE
     resource_name = random_resource()
     resource_path = "/v1/#{resource_name}"
-    resource = new Resource(resource_name, resource_path)
-
-    resource.show = (context) ->
-      return bb.delay(5).then(-> {body: {hello: "resource"}})
-    resource.show.public = true
-
-    resource.create = (context) ->
-      return bb.delay(5).then(-> {body: {hello: context.body.name}})
-    resource.create.public = true
 
     service_name = random_service()
-    resource_service = new ResourceService(service_name, [resource])
+    resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+      return bb.delay(5).then(-> {body: {hello: "resource"}})
+    )
 
     # SETUP ROUTER
     router = new Router(
@@ -102,26 +95,6 @@ describe 'Router Performance', ->
         .spread(( body, status) ->
           expect(status).to.equal(200)
           expect(body.hello).to.equal("resource")
-        )
-      ))
-
-      bb.all(promises)
-      .then( ->
-        et = new Date().getTime()
-        pe = (et-st)/number_of_messages
-        console.log "#{pe}ms per message"
-      )
-    )
-    .then( ->
-      console.log "Testing POST Sending MEssages to Resource"
-      st = new Date().getTime()
-      promises = [1..number_of_messages]
-      #throat is used to limit the number of outgoing current connections as there is a limited number
-      promises = promises.map(throat(concurrency, ->
-        http_post("http://localhost:8080#{resource_path}", {name: "alchemy"})
-        .spread(( body, status) ->
-          expect(status).to.equal(200)
-          expect(body.hello).to.equal("alchemy")
         )
       ))
 

@@ -5,19 +5,16 @@
 # * `lodash` is used as a general purpose utility library
 # * `express` is the framework used to handle HTTP requests
 # * `http` used to create the express server
-# * `ResourceService` is used as a service to communicate with resources
-# * `Bam` is the error library used to generate formatted errors
+# * `Service` is used as a service to communicate with resources
 # * `MessageNotDeliveredError` used if a message is returned from RabbitMQ
 # * `TimeoutError` used if a service times-out
 bb                       = require("bluebird")
 _                        = require("lodash")
 http                     = require("http")
 express                  = require("express")
-AlchemyResource          = require("alchemy-resource")
-ResourceService          = AlchemyResource.ResourceService
-Bam                      = AlchemyResource.Bam
-MessageNotDeliveredError = ResourceService.MessageNotDeliveredError
-TimeoutError             = ResourceService.TimeoutError
+Service                  = require("alchemy-ether")
+MessageNotDeliveredError = Service.MessageNotDeliveredError
+TimeoutError             = Service.TimeoutError
 
 # ## Router
 class Router
@@ -32,7 +29,7 @@ class Router
   #
   # The instance variables are:
   # 1. `@options` stores the instance options
-  # 2. `@router_service` is the empty Alchemy ResourceService used to message other Alchemy Resources
+  # 2. `@router_service` is the empty Alchemy Service used to message other Alchemy Resources
   # 3. `@http_server` is the HTTP server initialised with the `build_server` function
   #
   constructor: (options = {}) ->
@@ -48,11 +45,10 @@ class Router
       }
     )
 
-    @router_service = new ResourceService('alchemy_router', [], {
-      session_client: false
+    @router_service = new Service('router.service', {
       service_queue: false
       amqp_uri: @options.amqp_uri
-      service_timeout: @options.timeout
+      timeout: @options.timeout
     })
 
     @http_server = @build_server()
@@ -85,13 +81,11 @@ class Router
   #
   # The added middleware is:
   # 1. `@body_mw` reads the request body and attaches it to the request
-  # 2. `@interaction_id_mw` removes the `interaction-id` header, as this is used internally to track a request
   # 3. `@resource_path_mw` checks to see if a path is hard-coded in the `@options.resource_paths` object
   # 4. adds the `@options.middleware` callbacks to the express application
   # 5. `@error_mw` handles reporting errors and returning errors to the caller
   setup_middleware: (express_app) ->
     express_app.use @body_mw
-    express_app.use @interaction_id_mw
     express_app.use @resource_path_mw
 
     for mw in @options.middleware.map( (mw) -> mw.callback)
@@ -109,13 +103,6 @@ class Router
     req.on "end", ->
       next()
 
-  # `interaction_id_mw` removes the `interaction-id` header, as this is used internally to track a request
-  # delete keys with interaction-id despite case, whitespace, and underscores instead of dashes
-  interaction_id_mw: (req, res, next) =>
-    for key of req.headers
-      if /^x(-|_)interaction(-|_)id$/.test(key)
-        delete req.headers[key]
-    next()
 
   # `resource_path_mw` checks to see if a path is hard-coded in the `@options.resource_paths` object
   resource_path_mw: (req, res, next) =>
@@ -127,7 +114,16 @@ class Router
   # `error_mw` handles reporting errors and returning errors to the caller
   error_mw: (err, req, res, next) ->
     console.error err
-    Router.send_HTTP_response(Bam.error({}, err), res)
+    Router.send_HTTP_response({
+      status_code: 500
+      headers: {'Content-Type': 'application/json; charset=utf-8'}
+      body:   {
+        kind:           "Errors",
+        id:             Service.generateUUID()
+        created_at:     (new Date()).toISOString(),
+        errors: ["Unknown Error"]
+      }
+    }, res)
 
   # `on_HTTP_request` converts all requests to the router into Alchemy Service or ResourceService messages
   #
@@ -142,7 +138,6 @@ class Router
   # * if a `TimeoutError` is caught then the response to the caller is 408 `Bam.timeout_error`
   on_HTTP_request: (req, res) =>
     http_request = {
-      session_id: req.get 'X-Session-ID'
       scheme: req.protocol
       host: req.hostname
       port: req.port || 80
@@ -154,19 +149,37 @@ class Router
     }
 
     if req.service
-      send_message = @router_service.send_message_to_service( req.service, http_request )
+      send_message = @router_service.send_request_to_service( req.service, http_request )
     else
-      send_message = @router_service.send_message_to_resource( http_request )
+      send_message = @router_service.send_request_to_resource( http_request )
 
     send_message
     .then( (content) =>
       Router.send_HTTP_response(content, res)
     )
     .catch(MessageNotDeliveredError, =>
-      Router.send_HTTP_response(Bam.not_found({}, http_request.path), res)
+      Router.send_HTTP_response({
+        status_code: 404
+        headers: {'Content-Type': 'application/json; charset=utf-8'}
+        body:   {
+          kind:           "Errors",
+          id:             Service.generateUUID()
+          created_at:     (new Date()).toISOString(),
+          errors: ["#{http_request.path} not found"]
+        }
+      }, res)
     )
     .catch(TimeoutError, =>
-      Router.send_HTTP_response(Bam.timeout_error({}, @options.timeout), res)
+      Router.send_HTTP_response({
+        status_code: 408
+        headers: {'Content-Type': 'application/json; charset=utf-8'}
+        body:   {
+          kind:           "Errors",
+          id:             Service.generateUUID()
+          created_at:     (new Date()).toISOString(),
+          errors: ["Timeout after #{@options.timeout}ms"]
+        }
+      }, res)
     )
 
   # `send_HTTP_response` responds over HTTP to the caller

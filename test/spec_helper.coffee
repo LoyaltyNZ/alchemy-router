@@ -23,11 +23,6 @@ global.assert = chai.assert;
 #Alchemy Imports
 global.Service = require("alchemy-ether")
 
-AlchemyResource = require("alchemy-resource")
-global.SessionClient = AlchemyResource.SessionClient
-global.Resource = AlchemyResource.Resource
-global.ResourceService = AlchemyResource.ResourceService
-
 # Local imports
 
 global.Router = require '../src/alchemy-router'
