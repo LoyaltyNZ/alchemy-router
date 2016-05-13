@@ -1,3 +1,7 @@
+language: node_js
+node_js:
+  - "4"
+
 services:
   - rabbitmq
   - memcached
@@ -10,19 +14,16 @@ addons:
     - gcc-4.8
     - g++-4.8
 
-language: node_js
-
-compiler:
-  - gcc
+cache:
+  directories:
+    - node_modules
 
 before_install:
   - export CXX="g++-4.8"
 
-node_js:
-  - "0.12.7"
-
 deploy:
   provider: npm
+  email: "cloudservices@loyalty.co.nz"
   api_key:
     secure: "eC9l6dq8vfQ6Flx1gcZNip8YUpa37M1H3y0atQ/0JzHopzhQZdzoIE/Mtx2MrU0HVT9XI23ZRp0Nt1DpkfiTqNHnGxbTSxoqq/dn1LpjsfRxsh0fOlbOGDPt2rB+GU+9yoKLJ0kLDCiKOmnvUM6RTQASs8irjxFKcqJLrRebjWm1RRrmVxrMzB7d4lleuuFWLvScVfIkWOPRdEfziapbHDKsSUhMDZxhD5hu+cmS77G3Mf/nwvRrW4i06tAWdD+Pixe+epNb247aNkGcolAkxCv8cAXDyqyfh8mpIq78a15TpB0zyiEZXF+tt5ApVgRzrZn8mzC2zSNtdVHIiQZfxCie74BbqLGdN8vmMLNsQfiPR8UZHeyWtmy7K2+NXnuWEXY6o/ZgeqvSphX3A2/D+7PG/nzNtrl89OHu5H0sGnh1Y/QSuHEj4Yk40ULM8vNd7hOzbcuSpTVJ3MVeQB8jMTQUcczzkLIrVy/UDl4rLX4MRXrtD46O9A4GxNKrBj14WboUEaZxsyv1BdvtkJyzUGdN3sVwBFqW5ZufndA6y20YFxaXsKylrKp8ac4reUuv8qDYmZnFz+OY20Otfg6f+qjTwJZWHvIGdZyGwckyCK8S2YAzHM5G+3PEig4ZzSsIsC04FGKdOmi1QKjgHuNIGLWtEPlb/Bsnzv+4o6opAG8="
   on:
