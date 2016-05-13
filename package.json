@@ -1,7 +1,7 @@
 {
   "name": "alchemy-router",
   "description": "alchemy-router is the gateway from HTTP to Alchemy Resources for the Alchemy Micro-services Framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/LoyaltyNZ/alchemy-router",
   "repository": {
     "type": "git",
