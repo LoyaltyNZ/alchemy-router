@@ -165,7 +165,7 @@ class Router
           kind:           "Errors",
           id:             Service.generateUUID()
           created_at:     (new Date()).toISOString(),
-          errors: [{code: "generic.not_found", message: "Router: #{http_request.path} not found"}]
+          errors: [{code: "platform.not_found", message: "Router: Not found", reference: http_request.path}]
         }
       }, res)
     )
