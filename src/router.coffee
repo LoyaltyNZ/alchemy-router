@@ -121,7 +121,7 @@ class Router
         kind:           "Errors",
         id:             Service.generateUUID()
         created_at:     (new Date()).toISOString(),
-        errors: ["Unknown Error"]
+        errors: [{code: "platform.fault", message: "Router: Unknown Error"}]
       }
     }, res)
 
@@ -165,7 +165,7 @@ class Router
           kind:           "Errors",
           id:             Service.generateUUID()
           created_at:     (new Date()).toISOString(),
-          errors: ["#{http_request.path} not found"]
+          errors: [{code: "generic.not_found", message: "Router: #{http_request.path} not found"}]
         }
       }, res)
     )
@@ -177,7 +177,7 @@ class Router
           kind:           "Errors",
           id:             Service.generateUUID()
           created_at:     (new Date()).toISOString(),
-          errors: ["Timeout after #{@options.timeout}ms"]
+          errors: [{code: "platform.timeout", message: "Router: Timeout after #{@options.timeout}ms"}]
         }
       }, res)
     )
