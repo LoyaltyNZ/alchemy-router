@@ -1,6 +1,10 @@
 # Alchemy Router
 
-Alchemy Router is the gateway from HTTP to Alchemy Resources for the Alchemy Micro-services Framework. It can be used directly as an application or as a library to build and customise using [express](http://expressjs.com/en/guide/using-middleware.html) middleware and routes.
+[![npm version](https://badge.fury.io/js/alchemy-router.svg)](https://badge.fury.io/js/alchemy-router)
+[![Build Status](https://travis-ci.org/LoyaltyNZ/alchemy-router.svg?branch=master)](https://travis-ci.org/LoyaltyNZ/alchemy-router)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0.en.html)
+
+Alchemy Router is the gateway from HTTP to Alchemy Resources for the [Alchemy Micro-services Framework](https://github.com/LoyaltyNZ/alchemy-framework). It can be used directly as an application or as a library to build and customise using [express](http://expressjs.com/en/guide/using-middleware.html) middleware and routes.
 
 ## Router Application
 
