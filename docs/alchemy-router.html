@@ -34,6 +34,8 @@
 <pre><code>docker build -t alchemy-router:$VERSION .
 </code></pre><p>Push the docker container with:</p>
 <pre><code>docker push alchemy-router:$VERSION
+</code></pre><p>Run the docker container:</p>
+<pre><code>docker run -it -p <span class="hljs-number">8080</span>:<span class="hljs-number">8080</span> alchemy-router:$VERSION
 </code></pre><h2 id="router-library">Router Library</h2>
 <p>To install the router as a library:</p>
 <pre><code><span class="hljs-built_in">npm</span> install alchemy-router
@@ -75,9 +77,11 @@ router.start({
   additional_routes: [hello_route]
 })
 </code></pre>
+<h3 id="notes">Notes</h3>
+<p>The Router will not override any provided <code>x-interaction-id</code> headers, and will generate the header with a UUID if not present. This is to preserve traceability when calling between different platforms. If you require Interaction IDs to be unique within your platform, you may wish to extend the Router with a piece of middleware that generates your own Interaction IDs.</p>
 <h2 id="documentation">Documentation</h2>
 <p><em>This Alchemy-Router documentation is generated with <a href="https://jashkenas.github.io/docco/">docco</a> from its annotated source code.</em></p>
-<p>The Alchemy-Router package exports <a href="./src/router.html">Router</a>:</p>
+<p>The Alchemy-Router package exports <a href="./docs/src/router.html">Router</a>:</p>
 
           
             <div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./router"</span>)</pre></div>
@@ -91,7 +95,7 @@ router.start({
         
         <h2 id="examples">Examples</h2>
 <ul>
-<li><a href="./examples/example_1_send_message.html">Sending a message to a Resource</a></li>
+<li><a href="./docs/examples/example_1_send_message.html">Sending a message to a Resource</a></li>
 </ul>
 
         

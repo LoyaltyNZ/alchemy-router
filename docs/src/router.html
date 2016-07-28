@@ -40,8 +40,7 @@
 <li><code>lodash</code> is used as a general purpose utility library</li>
 <li><code>express</code> is the framework used to handle HTTP requests</li>
 <li><code>http</code> used to create the express server</li>
-<li><code>ResourceService</code> is used as a service to communicate with resources</li>
-<li><code>Bam</code> is the error library used to generate formatted errors</li>
+<li><code>Service</code> is used as a service to communicate with resources</li>
 <li><code>MessageNotDeliveredError</code> used if a message is returned from RabbitMQ</li>
 <li><code>TimeoutError</code> used if a service times-out</li>
 </ul>
@@ -52,11 +51,9 @@
 _                        = <span class="hljs-built_in">require</span>(<span class="hljs-string">"lodash"</span>)
 http                     = <span class="hljs-built_in">require</span>(<span class="hljs-string">"http"</span>)
 express                  = <span class="hljs-built_in">require</span>(<span class="hljs-string">"express"</span>)
-AlchemyResource          = <span class="hljs-built_in">require</span>(<span class="hljs-string">"alchemy-resource"</span>)
-ResourceService          = AlchemyResource.ResourceService
-Bam                      = AlchemyResource.Bam
-MessageNotDeliveredError = ResourceService.MessageNotDeliveredError
-TimeoutError             = ResourceService.TimeoutError</pre></div></div>
+Service                  = <span class="hljs-built_in">require</span>(<span class="hljs-string">"alchemy-ether"</span>)
+MessageNotDeliveredError = Service.MessageNotDeliveredError
+TimeoutError             = Service.TimeoutError</pre></div></div>
             
         </li>
         
@@ -94,7 +91,7 @@ TimeoutError             = ResourceService.TimeoutError</pre></div></div>
 <p>The instance variables are:</p>
 <ol>
 <li><code>@options</code> stores the instance options</li>
-<li><code>@router_service</code> is the empty Alchemy ResourceService used to message other Alchemy Resources</li>
+<li><code>@router_service</code> is the empty Alchemy Service used to message other Alchemy Resources</li>
 <li><code>@http_server</code> is the HTTP server initialised with the <code>build_server</code> function</li>
 </ol>
 
@@ -113,11 +110,10 @@ TimeoutError             = ResourceService.TimeoutError</pre></div></div>
       }
     )
 
-    @router_service = <span class="hljs-keyword">new</span> ResourceService(<span class="hljs-string">'alchemy_router'</span>, [], {
-      session_client: <span class="hljs-literal">false</span>
+    @router_service = <span class="hljs-keyword">new</span> Service(<span class="hljs-string">'router.service'</span>, {
       service_queue: <span class="hljs-literal">false</span>
       amqp_uri: @options.amqp_uri
-      service_timeout: @options.timeout
+      timeout: @options.timeout
     })
 
     @http_server = @build_server()</pre></div></div>
@@ -183,7 +179,6 @@ TimeoutError             = ResourceService.TimeoutError</pre></div></div>
 <p>The added middleware is:</p>
 <ol>
 <li><code>@body_mw</code> reads the request body and attaches it to the request</li>
-<li><code>@interaction_id_mw</code> removes the <code>interaction-id</code> header, as this is used internally to track a request</li>
 <li><code>@resource_path_mw</code> checks to see if a path is hard-coded in the <code>@options.resource_paths</code> object</li>
 <li>adds the <code>@options.middleware</code> callbacks to the express application</li>
 <li><code>@error_mw</code> handles reporting errors and returning errors to the caller</li>
@@ -193,7 +188,6 @@ TimeoutError             = ResourceService.TimeoutError</pre></div></div>
             
             <div class="content"><div class='highlight'><pre>  setup_middleware: <span class="hljs-function"><span class="hljs-params">(express_app)</span> -&gt;</span>
     express_app.use @body_mw
-    express_app.use @interaction_id_mw
     express_app.use @resource_path_mw
 
     <span class="hljs-keyword">for</span> mw <span class="hljs-keyword">in</span> @options.middleware.map( <span class="hljs-function"><span class="hljs-params">(mw)</span> -&gt;</span> mw.callback)
@@ -231,26 +225,6 @@ TimeoutError             = ResourceService.TimeoutError</pre></div></div>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p><code>interaction_id_mw</code> removes the <code>interaction-id</code> header, as this is used internally to track a request
-delete keys with interaction-id despite case, whitespace, and underscores instead of dashes</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  interaction_id_mw: <span class="hljs-function"><span class="hljs-params">(req, res, next)</span> =&gt;</span>
-    <span class="hljs-keyword">for</span> key <span class="hljs-keyword">of</span> req.headers
-      <span class="hljs-keyword">if</span> <span class="hljs-regexp">/^x(-|_)interaction(-|_)id$/</span>.test(key)
-        <span class="hljs-keyword">delete</span> req.headers[key]
-    next()</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-10">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
-              </div>
               <p><code>resource_path_mw</code> checks to see if a path is hard-coded in the <code>@options.resource_paths</code> object</p>
 
             </div>
@@ -264,11 +238,11 @@ delete keys with interaction-id despite case, whitespace, and underscores instea
         </li>
         
         
-        <li id="section-11">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p><code>error_mw</code> handles reporting errors and returning errors to the caller</p>
 
@@ -276,16 +250,25 @@ delete keys with interaction-id despite case, whitespace, and underscores instea
             
             <div class="content"><div class='highlight'><pre>  error_mw: <span class="hljs-function"><span class="hljs-params">(err, req, res, next)</span> -&gt;</span>
     <span class="hljs-built_in">console</span>.error err
-    Router.send_HTTP_response(Bam.error({}, err), res)</pre></div></div>
+    Router.send_HTTP_response({
+      status_code: <span class="hljs-number">500</span>
+      headers: {<span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'application/json; charset=utf-8'</span>}
+      body:   {
+        kind:           <span class="hljs-string">"Errors"</span>,
+        id:             Service.generateUUID()
+        created_at:     (<span class="hljs-keyword">new</span> Date()).toISOString(),
+        errors: [{code: <span class="hljs-string">"platform.fault"</span>, message: <span class="hljs-string">"Router: Unknown Error"</span>}]
+      }
+    }, res)</pre></div></div>
             
         </li>
         
         
-        <li id="section-12">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p><code>on_HTTP_request</code> converts all requests to the router into Alchemy Service or ResourceService messages</p>
 <p>First the <code>http_request</code> packet is created from the express request</p>
@@ -302,7 +285,6 @@ it sends the message directly to the service, otherwise sends it to the resource
             
             <div class="content"><div class='highlight'><pre>  on_HTTP_request: <span class="hljs-function"><span class="hljs-params">(req, res)</span> =&gt;</span>
     http_request = {
-      session_id: req.get <span class="hljs-string">'X-Session-ID'</span>
       scheme: req.protocol
       host: req.hostname
       port: req.port || <span class="hljs-number">80</span>
@@ -311,22 +293,63 @@ it sends the message directly to the service, otherwise sends it to the resource
       verb: req.method
       headers: req.headers
       body: req.body
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Standardize x-interaction-id headers, and set to UUID if not provided</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    interaction = <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">for</span> key <span class="hljs-keyword">of</span> req.headers
+      <span class="hljs-keyword">if</span> <span class="hljs-regexp">/^x(-|_)interaction(-|_)id$/</span>.test(key)
+        interaction ||= req.headers[key]
+        <span class="hljs-keyword">delete</span>( req.headers[key] )
+    <span class="hljs-keyword">if</span> !interaction
+      http_request.headers[<span class="hljs-string">'x-interaction-id'</span>] = Service.generateUUID()
+    <span class="hljs-keyword">else</span>
+      http_request.headers[<span class="hljs-string">'x-interaction-id'</span>] = interaction
 
     <span class="hljs-keyword">if</span> req.service
-      send_message = @router_service.send_message_to_service( req.service, http_request )
+      send_message = @router_service.send_request_to_service( req.service, http_request )
     <span class="hljs-keyword">else</span>
-      send_message = @router_service.send_message_to_resource( http_request )
+      send_message = @router_service.send_request_to_resource( http_request )
 
     send_message
     .<span class="hljs-keyword">then</span>( <span class="hljs-function"><span class="hljs-params">(content)</span> =&gt;</span>
       Router.send_HTTP_response(content, res)
     )
     .<span class="hljs-keyword">catch</span>(MessageNotDeliveredError, <span class="hljs-function">=&gt;</span>
-      Router.send_HTTP_response(Bam.not_found({}, http_request.path), res)
+      Router.send_HTTP_response({
+        status_code: <span class="hljs-number">404</span>
+        headers: {<span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'application/json; charset=utf-8'</span>}
+        body:   {
+          kind:           <span class="hljs-string">"Errors"</span>,
+          id:             Service.generateUUID()
+          created_at:     (<span class="hljs-keyword">new</span> Date()).toISOString(),
+          errors: [{code: <span class="hljs-string">"platform.not_found"</span>, message: <span class="hljs-string">"Router: Not found"</span>, reference: http_request.path}]
+        }
+      }, res)
     )
     .<span class="hljs-keyword">catch</span>(TimeoutError, <span class="hljs-function">=&gt;</span>
-      Router.send_HTTP_response(Bam.timeout_error({}, @options.timeout), res)
+      Router.send_HTTP_response({
+        status_code: <span class="hljs-number">408</span>
+        headers: {<span class="hljs-string">'Content-Type'</span>: <span class="hljs-string">'application/json; charset=utf-8'</span>}
+        body:   {
+          kind:           <span class="hljs-string">"Errors"</span>,
+          id:             Service.generateUUID()
+          created_at:     (<span class="hljs-keyword">new</span> Date()).toISOString(),
+          errors: [{code: <span class="hljs-string">"platform.timeout"</span>, message: <span class="hljs-string">"Router: Timeout after <span class="hljs-subst">#{@options.timeout}</span>ms"</span>}]
+        }
+      }, res)
     )</pre></div></div>
             
         </li>

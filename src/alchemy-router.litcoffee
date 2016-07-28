@@ -102,15 +102,19 @@ router.start({
 })
 ```
 
+### Notes
+
+The Router will not override any provided `x-interaction-id` headers, and will generate the header with a UUID if not present. This is to preserve traceability when calling between different platforms. If you require Interaction IDs to be unique within your platform, you may wish to extend the Router with a piece of middleware that generates your own Interaction IDs.
+
 ## Documentation
 
 *This Alchemy-Router documentation is generated with [docco](https://jashkenas.github.io/docco/) from its annotated source code.*
 
-The Alchemy-Router package exports [Router](./src/router.html):
+The Alchemy-Router package exports [Router](./docs/src/router.html):
 
     module.exports = require("./router")
 
 ## Examples
 
-* [Sending a message to a Resource](./examples/example_1_send_message.html)
+* [Sending a message to a Resource](./docs/examples/example_1_send_message.html)
 
