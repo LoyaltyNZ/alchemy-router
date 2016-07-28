@@ -129,6 +129,29 @@ describe 'Router', ->
         bb.all([resource_service.stop(), router.stop()])
       )
 
+    it 'should create a default interaction ID', ->
+      resource_name = random_resource()
+      resource_path = "/v1/#{resource_name}"
+
+      service_name = random_service()
+      resource_service = new Service(service_name, {resource_paths: [resource_path]},(payload) ->
+        return { body: {"interaction": payload.headers['x-interaction-id']} }
+      )
+
+      router = new Router(timeout: 100)
+
+      bb.all([router.start(), resource_service.start()])
+      .then( ->
+        http_get("http://localhost:8080#{resource_path}")
+      )
+      .spread( (body,status) ->
+        expect(status).to.equal(200)
+        expect(body.interaction).to.have.lengthOf(32)
+      )
+      .finally( ->
+        bb.all([resource_service.stop(), router.stop()])
+      )
+
     it 'should route to resources via exchange', ->
       resource_name = random_resource()
       resource_path = "/v1/#{resource_name}"
