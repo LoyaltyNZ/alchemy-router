@@ -148,8 +148,16 @@ class Router
       body: req.body
     }
 
-    if !http_request.headers['x-interaction-id']
+    #Standardize x-interaction-id headers, and set to UUID if not provided
+    interaction = null
+    for key of req.headers
+      if /^x(-|_)interaction(-|_)id$/.test(key)
+        interaction ||= req.headers[key]
+        delete( req.headers[key] )
+    if !interaction
       http_request.headers['x-interaction-id'] = Service.generateUUID()
+    else
+      http_request.headers['x-interaction-id'] = interaction
 
     if req.service
       send_message = @router_service.send_request_to_service( req.service, http_request )
