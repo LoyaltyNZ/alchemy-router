@@ -80,8 +80,8 @@ class Router
 
     express_app.route("*").all @on_HTTP_request
 
-    var server = http.createServer(express_app);
-    server.keepAliveTimeout = @options.keepAliveTimeout;
+    server = http.createServer(express_app)
+    server.keepAliveTimeout = @options.keepAliveTimeout
     bb.promisifyAll(server);
 
   # `setup_middleware` adds the express router middleware
