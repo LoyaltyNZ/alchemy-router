@@ -26,6 +26,10 @@ class Router
   # 4. `resource_paths`: explicit paths to services e.g. `{'/v1/test': 'service.test'}`
   # 5. `middleware`: a list of express middleware to be added
   # 6. `additional_routes`: a list of additional routes to be added to the HTTP server
+  # 3. `keepAliveTimeout`: The number of milliseconds of inactivity the server will wait
+  #                        for additional incoming data, after it has finished writing the
+  #                        last response, before a socket will be destroyed.
+  #                        See https://nodejs.org/dist/latest-v14.x/docs/api/http.html#http_server_keepalivetimeout
   #
   # The instance variables are:
   # 1. `@options` stores the instance options
@@ -39,6 +43,7 @@ class Router
         amqp_uri: 'amqp://localhost'
         port: 8080
         timeout: 5000
+        keepAliveTimeout: 5000
         resource_paths: {}
         middleware: []
         additional_routes: []
@@ -75,7 +80,9 @@ class Router
 
     express_app.route("*").all @on_HTTP_request
 
-    bb.promisifyAll(http.createServer(express_app))
+    var server = http.createServer(express_app);
+    server.keepAliveTimeout = @options.keepAliveTimeout;
+    bb.promisifyAll(server);
 
   # `setup_middleware` adds the express router middleware
   #
