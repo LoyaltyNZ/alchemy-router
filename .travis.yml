@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "4"
+  - "8.11.4"
 
 services:
   - rabbitmq
@@ -13,6 +13,7 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+    - rabbitmq-server
 
 cache:
   directories:
@@ -21,10 +22,18 @@ cache:
 before_install:
   - export CXX="g++-4.8"
 
+before_script:
+  - npm install -g npm@6.2.0
+  - npm install -g audit-filter
+
+script:
+  - npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
+  - npm test
+
 deploy:
   provider: npm
   email: "cloudservices@loyalty.co.nz"
   api_key:
-    secure: "eC9l6dq8vfQ6Flx1gcZNip8YUpa37M1H3y0atQ/0JzHopzhQZdzoIE/Mtx2MrU0HVT9XI23ZRp0Nt1DpkfiTqNHnGxbTSxoqq/dn1LpjsfRxsh0fOlbOGDPt2rB+GU+9yoKLJ0kLDCiKOmnvUM6RTQASs8irjxFKcqJLrRebjWm1RRrmVxrMzB7d4lleuuFWLvScVfIkWOPRdEfziapbHDKsSUhMDZxhD5hu+cmS77G3Mf/nwvRrW4i06tAWdD+Pixe+epNb247aNkGcolAkxCv8cAXDyqyfh8mpIq78a15TpB0zyiEZXF+tt5ApVgRzrZn8mzC2zSNtdVHIiQZfxCie74BbqLGdN8vmMLNsQfiPR8UZHeyWtmy7K2+NXnuWEXY6o/ZgeqvSphX3A2/D+7PG/nzNtrl89OHu5H0sGnh1Y/QSuHEj4Yk40ULM8vNd7hOzbcuSpTVJ3MVeQB8jMTQUcczzkLIrVy/UDl4rLX4MRXrtD46O9A4GxNKrBj14WboUEaZxsyv1BdvtkJyzUGdN3sVwBFqW5ZufndA6y20YFxaXsKylrKp8ac4reUuv8qDYmZnFz+OY20Otfg6f+qjTwJZWHvIGdZyGwckyCK8S2YAzHM5G+3PEig4ZzSsIsC04FGKdOmi1QKjgHuNIGLWtEPlb/Bsnzv+4o6opAG8="
+    secure: "loNgec3LpO0fr9AJTbzaawzCAJauscSu+jvGeIakM3J8sILRGfIWj0VZlXKN0fiLXYm2eHQatfkzS2QH/6D0BN1fn/4O6jlVhQJDhNKVK1vjBEkVzm1iwQHq9Flm4JA9GjHpBxrNAlh23nSnCug7xKNY+oGRvmW9BHgTYB8P2sqqu3NBFmUHPpF3vWVTCaG9qECg1YFoa2I0tJpcNH5+MUUat3mf7vRaE81WmH/cHITDqkizyn4ts+gdXzzs9xG0eukp/NCfei3fOSeI3kD4mubkOXt5SUVtXDu4GeBfNxziMom3+H+cSI9BUCcNZg62AH/ERgXmINMinJtQNSITgYikc/eSraRFXb0LKwt9s+voWal7mIwxcDDxfvoyoIeI6cqU0Q1v8CV6xS3pJsiE6TjkyTi3y/n9aZEwzzDuviUFQTihOnAb+E7iJ9+WDbb93q3nTMW7KX4EunnL3pPGsvZ5ABmIecRp22YClaxybCMmXpPWQXcVJfviYMDlkarMwCLGWkrb71Ec/SsnD8f4IwoXIbOqshlQPwwPmQoRwzxbp7/BHIh6z1ZVAGHfA+7WDYcgexXOyGQo7pLIn5Bm8uIQC9RfXoI0Bke837JtyQkyyf/51T4Mi5eiaYLvAT1rilZukvSHEyfcroUd4ZPQr5sPmB97mhwHvStTN31c3o8="
   on:
     tags: true

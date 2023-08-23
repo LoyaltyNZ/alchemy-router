@@ -1,7 +1,7 @@
 {
   "name": "alchemy-router",
   "description": "alchemy-router is the gateway from HTTP to Alchemy Resources for the Alchemy Micro-services Framework",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/LoyaltyNZ/alchemy-router",
   "repository": {
     "type": "git",
@@ -19,23 +19,23 @@
     "node": ">= 0.12.7"
   },
   "dependencies": {
-    "coffee-script": "1.10.0",
-    "express": "4.13.3",
+    "alchemy-ether": "^1.0.3",
     "bluebird": "2.9.34",
-    "lodash": "3.10.1",
-    "alchemy-ether": "1.0.0",
-    "qs": "4.0.0",
-    "dotenv": "1.1.0"
+    "coffeescript": "^2.7.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "qs": "^6.11.2"
   },
   "devDependencies": {
-    "mocha": "2.2.5",
-    "chai": "2.3.0",
-    "sinon": "1.14.1",
-    "request": "2.51.0",
-    "throat": "2.0.2"
+    "chai": "^4.3.7",
+    "mocha": "^7.2.0",
+    "request": "^2.88.2",
+    "sinon": "^15.2.0",
+    "throat": "^6.0.2"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha test/*.coffee --exit --require coffeescript/register --require test/spec_helper --recursive --reporter spec",
     "doc": "cat src/alchemy-router.litcoffee > README.md && docco -l linear src/alchemy-router.litcoffee && docco src/*.coffee -o docs/src && docco examples/*.coffee -o docs/examples"
   },
   "license": "LGPL-3.0"
