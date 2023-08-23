@@ -9,3 +9,4 @@
   - Bump `express` from `4.13.3` to `4.18.2`
   - Bump `request` from `2.51.0` to `2.88.2`
   - Bump `qs` from `4.0.0` to `6.11.2`
+  - Bump `throat` from `2.0.2` to `6.0.2`
