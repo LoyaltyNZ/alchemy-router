@@ -8,3 +8,4 @@
   - Bump `chai` from `2.3.0` to `4.3.7`
   - Bump `express` from `4.13.3` to `4.18.2`
   - Bump `request` from `2.51.0` to `2.88.2`
+  - Bump `qs` from `4.0.0` to `6.11.2`
