@@ -112,7 +112,7 @@ The Router will not override any provided `x-interaction-id` headers, and will g
 
 The Alchemy-Router package exports [Router](./docs/src/router.html):
 
-    module.exports = require("./router")
+module.exports = require("./router")
 
 ## Examples
 

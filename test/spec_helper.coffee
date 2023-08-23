@@ -24,8 +24,7 @@ global.assert = chai.assert;
 global.Service = require("alchemy-ether")
 
 # Local imports
-
-global.Router = require '../src/alchemy-router'
+global.Router = require '../src/router'
 
 
 global.random_name = (prefix) ->

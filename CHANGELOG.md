@@ -12,3 +12,4 @@
   - Bump `throat` from `2.0.2` to `6.0.2`
   - Bump `sinon` from `1.14.1` to `15.2.0`
   - Bump `dotenv` from `1.1.0` to `16.3.1`
+  - Migrate to `coffeescript` `2.7.0`
