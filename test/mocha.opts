@@ -1,5 +1,0 @@
---compilers coffee:coffeescript/register
---require test/spec_helper
---recursive
---timeout 5000
---reporter spec
