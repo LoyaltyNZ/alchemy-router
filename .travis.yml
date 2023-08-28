@@ -1,11 +1,9 @@
 language: node_js
 node_js:
-  - "8.11.4"
-
+- 8.11.4
 services:
-  - rabbitmq
-  - memcached
-
+- rabbitmq
+- memcached
 addons:
   apt:
     sources:
@@ -14,26 +12,21 @@ addons:
     - gcc-4.8
     - g++-4.8
     - rabbitmq-server
-
 cache:
   directories:
-    - node_modules
-
+  - node_modules
 before_install:
-  - export CXX="g++-4.8"
-
+- export CXX="g++-4.8"
 before_script:
-  - npm install -g npm@6.2.0
-  - npm install -g audit-filter
-
+- npm install -g npm@6.2.0
+- npm install -g audit-filter
 script:
-  - npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
-  - npm test
-
+- npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
+- npm test
 deploy:
   provider: npm
-  email: "cloudservices@loyalty.co.nz"
+  email: cloudservices@loyalty.co.nz
   api_key:
-    secure: "loNgec3LpO0fr9AJTbzaawzCAJauscSu+jvGeIakM3J8sILRGfIWj0VZlXKN0fiLXYm2eHQatfkzS2QH/6D0BN1fn/4O6jlVhQJDhNKVK1vjBEkVzm1iwQHq9Flm4JA9GjHpBxrNAlh23nSnCug7xKNY+oGRvmW9BHgTYB8P2sqqu3NBFmUHPpF3vWVTCaG9qECg1YFoa2I0tJpcNH5+MUUat3mf7vRaE81WmH/cHITDqkizyn4ts+gdXzzs9xG0eukp/NCfei3fOSeI3kD4mubkOXt5SUVtXDu4GeBfNxziMom3+H+cSI9BUCcNZg62AH/ERgXmINMinJtQNSITgYikc/eSraRFXb0LKwt9s+voWal7mIwxcDDxfvoyoIeI6cqU0Q1v8CV6xS3pJsiE6TjkyTi3y/n9aZEwzzDuviUFQTihOnAb+E7iJ9+WDbb93q3nTMW7KX4EunnL3pPGsvZ5ABmIecRp22YClaxybCMmXpPWQXcVJfviYMDlkarMwCLGWkrb71Ec/SsnD8f4IwoXIbOqshlQPwwPmQoRwzxbp7/BHIh6z1ZVAGHfA+7WDYcgexXOyGQo7pLIn5Bm8uIQC9RfXoI0Bke837JtyQkyyf/51T4Mi5eiaYLvAT1rilZukvSHEyfcroUd4ZPQr5sPmB97mhwHvStTN31c3o8="
+    secure: nQSdbTHXP9V3k+WYiIVtYfas4Udge/RM4Z+xJJAN89ywPwMqB0nZG1ugo5gvSOmgpI/lf+euf+GBYLhBgGV1Uqc2/y2f6RdLk8KaxUg6b0Jq45FvlZgfsQVoHf+v7J5Z+vHefiquzbvSllafWBD8W2DgWv5Xc+SOC+VxoKQ0i1TLw19/6Y7Kfz/W+bSGVVSghUkloyxSHXkDCHKnSXQ9RNt5zU5Z9vUgxlBnieB4OYWvB+SWBKugM0PtikCIxwNeKzNrSPd8fx170OZrSOywzAlFxP7Utev15IDMrG6azIaEk7tKkp4ZxEmlS/Y8WjouKx1SrYyoxFnKVI/pdvor7571fcFbHBtOaEQiddKAH+r1ohKJFWs0mum6MCkdF7VV7XrMMXT2FyGcu97Y1vzh26T0xd8J0yD6zrzEuj7OmnjE2Zhm7LXbxAG/MOaxoOUc8DLt/NkSyZwczSSYPVXrkt1tDua21PdPXAtVDml4hIDZsEhRdHj3Zn0yWhOByu8R6B6vqftKTklzpjZyxCXfefVHBEOQfdHrhZIRSu6d5atwa98D6qew7SlCmbZsB+Q3caLfWeorjNEvE5zEa5IevoeSnjLg8l94xWsTrxqn2uFv8oLAKJbsHHEC3fsbzgKYfYBKTmRdCS2CNr7UK1ieeV/FaNmRESSdlKRdz7Y8nRQ=
   on:
     tags: true
