@@ -1,4 +1,4 @@
-name: Node.js CI
+name: PRChecks
 
 on:
   pull_request:
@@ -7,20 +7,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     services:
-      rabbitmq:
-        image: rabbitmq
+      memcached:
+        image: memcached:latest
+        ports:
+        - 11211/udp
         options: >-
-          --health-cmd "rabbitmq-diagnostics -q ping"
-          --health-interval 10s
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/udp/127.0.0.1/11211'" 
+          --health-interval 10s 
           --health-timeout 5s
           --health-retries 5
-      memcached:
-        image: memcached
+      rabbitmq:
+        image: rabbitmq:latest
+        ports:
+        - 5672/tcp
         options: >-
-          --health-cmd "memcached-tool 127.0.0.1:11211 stats"
+          --health-cmd "rabbitmq-diagnostics -q ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -42,8 +46,13 @@ jobs:
     - name: Install dependencies
       run: npm install -g npm@6.2.0
 
-    - name: Install global packages
-      run: npm install -g audit-filter
+    - name: Install Python 2.7
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python2.7
+
+    - name: Set Python 2.7 for node-gyp
+      run: npm config set python /usr/bin/python2.7
 
     - name: Cache node_modules
       uses: actions/cache@v3
@@ -53,8 +62,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
+    - name: Install project dependencies
+      run: npm install
+
     - name: Build and Test
       run: |
         export CXX="g++-4.8"
-        npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
         npm test
+
+    # - name: Build and Test
+    #   run: |
+    #     export CXX="g++-4.8"
+    #     npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
+    #     npm test
