@@ -13,7 +13,7 @@ jobs:
       memcached:
         image: memcached:latest
         ports:
-        - 11211/udp
+        - 11211:11211
         options: >-
           --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/udp/127.0.0.1/11211'" 
           --health-interval 10s 
@@ -22,7 +22,7 @@ jobs:
       rabbitmq:
         image: rabbitmq:latest
         ports:
-        - 5672/tcp
+        - 5672:5672
         options: >-
           --health-cmd "rabbitmq-diagnostics -q ping"
           --health-interval 10s
@@ -43,16 +43,16 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install -g npm@6.2.0
+    # - name: Install dependencies
+    #   run: npm install
 
-    - name: Install Python 2.7
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python2.7
+    # - name: Install Python 2.7
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y python2.7
 
-    - name: Set Python 2.7 for node-gyp
-      run: npm config set python /usr/bin/python2.7
+    # - name: Set Python 2.7 for node-gyp
+    #   run: npm config set python /usr/bin/python2.7
 
     - name: Cache node_modules
       uses: actions/cache@v3
