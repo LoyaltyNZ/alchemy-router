@@ -47,8 +47,12 @@ jobs:
 
     - name: Install project dependencies
       run: | 
-        npm install -g audit-filter
+        npm install
 
+    - name: Install audit-filter
+      run: npm install -g audit-filter@0.5.0
+      shell: /usr/bin/bash -e {0}
+      
     - name: Run npm audit and filter results
       run: |
         # Run npm audit and save the output to a file
@@ -60,11 +64,7 @@ jobs:
       shell: /usr/bin/bash -e {0}
       env:
         NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-
-    - name: Auditing security vulnerabilities
-      run: | 
-        npm audit --json | audit-filter --nsp-config=.nsprc --audit=-
+        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
     - name: Build and Test
       run: |
