@@ -1,7 +1,7 @@
-name: PRChecks
+name: Deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
@@ -46,7 +46,7 @@ jobs:
         always-auth: true
 
     - name: Install project dependencies
-      run: | 
+      run: |
         npm install
 
     - name: Build and Test
@@ -54,3 +54,7 @@ jobs:
         export CXX="g++-4.8"
         npm test
 
+    # - name: Publish to npm
+    #   run: npm publish
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
