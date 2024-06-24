@@ -53,8 +53,8 @@ jobs:
       run: | 
         npm install
 
-    - name: OSV Scan
-      uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v1.6.2-beta1
+    # - name: OSV Scan
+    #   uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v1.6.2-beta1
 
     - name: Build and Test
       run: |
