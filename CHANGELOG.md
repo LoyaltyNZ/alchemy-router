@@ -2,7 +2,7 @@
 
 ## v1.0.5
 
-- Migration to Github Actions [TO-7672] 
+- Migrated from Travis CI to GitHub Actions [TO-7672] 
 
 ## v1.0.4
 
