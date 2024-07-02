@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.0.5
+
+- Migrated from Travis CI to GitHub Actions [TO-7672] 
+
 ## v1.0.4
 
 - Critical vulnerabilities update
